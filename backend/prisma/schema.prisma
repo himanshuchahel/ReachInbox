@@ -1,0 +1,118 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum EmailStatus {
+  SCHEDULED
+  PROCESSING
+  SENT
+  FAILED
+}
+
+enum CampaignStatus {
+  DRAFT
+  SCHEDULED
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+model User {
+  id        String   @id @default(cuid())
+  googleId  String   @unique
+  email     String   @unique
+  name      String
+  avatarUrl String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  senders          Sender[]
+  campaigns        Campaign[]
+  emails            Email[]
+  slackIntegration SlackIntegration?
+}
+
+model Sender {
+  id                    String  @id @default(cuid())
+  userId                String
+  email                 String
+  name                  String?
+  smtpUser              String?
+  smtpPasswordEncrypted String?
+  hourlyLimit           Int     @default(100)
+  minDelayMs            Int     @default(2000)
+  isActive              Boolean @default(true)
+
+  user      User       @relation(fields: [userId], references: [id])
+  campaigns Campaign[]
+  emails    Email[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, email])
+}
+
+model Campaign {
+  id                   String         @id @default(cuid())
+  userId               String
+  senderId             String
+  subject              String
+  body                 String
+  startAt              DateTime
+  delayBetweenEmailsMs Int
+  hourlyLimit          Int
+  status               CampaignStatus @default(DRAFT)
+
+  user   User    @relation(fields: [userId], references: [id])
+  sender Sender  @relation(fields: [senderId], references: [id])
+  emails Email[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Email {
+  id             String      @id @default(cuid())
+  campaignId     String
+  userId         String
+  senderId       String
+  recipient      String
+  subject        String
+  body           String
+  scheduledAt    DateTime
+  sentAt         DateTime?
+  status         EmailStatus @default(SCHEDULED)
+  bullJobId      String?     @unique
+  idempotencyKey String      @unique
+  attempts       Int         @default(0)
+  errorMessage   String?
+
+  campaign Campaign @relation(fields: [campaignId], references: [id])
+  user     User     @relation(fields: [userId], references: [id])
+  sender   Sender   @relation(fields: [senderId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId, status, scheduledAt])
+  @@index([senderId, status, scheduledAt])
+}
+
+model SlackIntegration {
+  id                   String   @id @default(cuid())
+  userId               String   @unique
+  teamId               String?
+  teamName             String?
+  botUserId            String?
+  accessTokenEncrypted String
+  connectedAt          DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+}
