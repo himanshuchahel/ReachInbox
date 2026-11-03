@@ -12,7 +12,7 @@ A full-stack SaaS application for creating, scheduling, and managing email campa
 ![Campaigns](./docs/screenshots/campaigns.png)
 
 ### Email Preview
-![Email Preview](./docs/screenshots/email-preview.png)
+![Email Preview](./docs/screenshots/email.png)
 
 ### Received Email (Ethereal)
 ![Received Email](./docs/screenshots/email-sent.png)
