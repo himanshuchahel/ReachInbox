@@ -14,6 +14,12 @@ A full-stack SaaS application for creating, scheduling, and managing email campa
 ### Email Preview
 ![Email Preview](./docs/screenshots/emails.png)
 
+### Slack 
+![Slack](./docs/screenshots/slack.png)
+
+![Slack](./docs/screenshots/slack_oauth.png)
+
+
 ### Received Email (Ethereal)
 ![Received Email](./docs/screenshots/email.png)
 
