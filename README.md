@@ -25,7 +25,7 @@ A full-stack SaaS application for creating, scheduling, and managing email campa
 
 ### Demo Video
 
-[Watch ReachInbox Demo](./docs/video/Screen Recording 2026-11-03 032135 (compressed by happyscribe.com).mp4)
+[Watch ReachInbox Demo](./docs/video/Demo.mp4)
 
 ---
 
